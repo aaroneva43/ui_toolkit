@@ -1,0 +1,63 @@
+<Attr name="l7_content_switch" abbreviate="l7_content_switch" multi="yes" viewsensitive="yes" canreindex="yes">
+    <Item name="name" config="static" useAsIdx="yes">
+        <dataType type="string"/>
+        <dataScope min="1" max="96"/>
+    </Item>
+
+    <Item name="id" config="static" useAsIdx="yes">
+        <dataType type="Unsigned"/>
+        <dataScope min="1" max="255"/>
+    </Item> 	
+
+    <Item name="description" config="static" useAsIdx="no">
+        <dataType type="string"/>
+        <dataScope min="1" max="255"/>
+    </Item> 
+
+
+    <Item name="pool" config="static" useAsIdx="no">
+        <dataType type="string"/>
+        <dataScope min="1" max="96"/>
+    </Item>	
+
+    <Item name="real_server" config="static" useAsIdx="no">
+        <dataType type="string"/>
+        <dataScope min="1" max="96"/>
+    </Item>		
+
+    <Item name="match_case_sensitive" config="static" useAsIdx="no">
+        <dataType type="boolean"/>
+        <dataScope min="0" max="1" default="0"/>
+    </Item> 
+
+    <AttrL1 name="match" abbreviate="match" multi="yes" viewsensitive="no">
+        <Item name="id" config="static" useAsIdx="yes">
+            <dataType type="Unsigned"/>
+            <dataScope min="1" max="16"/>
+        </Item>
+
+        <Item name="element" config="static" useAsIdx="no"
+					description="1 uri, 2 header, 3 cookie">
+            <dataType type="Unsigned"/>
+            <dataScope min="1" max="4"/>
+        </Item> 	
+
+        <Item name="element_name" config="static" useAsIdx="no">
+            <dataType type="string"/>
+            <dataScope min="1" max="64"/>
+        </Item> 								
+
+
+        <Item name="operator" config="static" useAsIdx="no"
+					description="1:exist 2:not_exist 3:equal 4:not_equal 5:contain 6:not_contain 7:match 8:not_match">
+            <dataType type="integer"/>
+            <dataScope min="1" max="8"/>
+        </Item> 
+
+        <Item name="arguments" config="static" useAsIdx="no">
+            <dataType type="string"/>
+            <dataScope min="1" max="128"/>
+        </Item> 
+    </AttrL1>
+
+</Attr>			
