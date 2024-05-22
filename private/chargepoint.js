@@ -199,7 +199,7 @@ function updateSession() {
           referrer:
             "https://sso.chargepoint.com/?redirect=https%3A%2F%2Fdriver.chargepoint.com%2FmapCenter%2F37.488739553662704%2F-118.99898983846884%2F6%3Fview%3Dlist&locale=en-US",
           referrerPolicy: "strict-origin-when-cross-origin",
-          body: '{"username":"xiepeng.cn@gmail.com","password":"!QAZ2wsx","timezone_offset":420,"timezone":"America/Los_Angeles","redirect":"https://driver.chargepoint.com/mapCenter/37.488739553662704/-118.99898983846884/6?view=list"}',
+          body: '{"username":"xiepeng.cn@gmail.com","password":"!QAZ2wsx","timezone_offset":420,"timezone":"America/Los_Angeles","redirect":"https://driver.chargepoint.com/mapCenter?view=list"}',
           method: "POST",
           mode: "cors",
           credentials: "include",
