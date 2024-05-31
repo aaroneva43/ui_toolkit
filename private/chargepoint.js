@@ -31,6 +31,11 @@
   updateSession();
 })();
 
+const events = []; // store all charging events
+window.EVENTS = events;
+
+const STOP_BY_MS = 3200000; // 53.3333 minutes
+
 function doFetch(url, body = {}, method = "POST") {
   return fetch(url, {
     headers: {
@@ -60,6 +65,7 @@ function stopCharging(params = {}) {
 
       if (sessionId === undefined) {
         console.warn("no session found, waiting for plugin...");
+        events.length = 0;
         return;
       }
 
@@ -78,7 +84,7 @@ function stopCharging(params = {}) {
           } = r?.charging_status || {};
 
           var shouldStop =
-            (session_time > 3200000 || charging_time >= 3200000) &&
+            (session_time > STOP_BY_MS || charging_time >= STOP_BY_MS) &&
             stopStates.includes(state);
 
           if (shouldStop) {
@@ -87,20 +93,46 @@ function stopCharging(params = {}) {
               `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
             );
           }
-          console.table({
-            charging_time: `${charging_time} -- ${Math.floor(
-              charging_time / 1000 / 60
-            )}m${(charging_time / 1000) % 60}s`,
-            session_time: `${session_time} -- ${Math.floor(
-              session_time / 1000 / 60
-            )}m${(session_time / 1000) % 60}s`,
+          const event = {
+            charging_time,
+            session_time,
             device_id,
             session_id: sessionId,
             port_level,
             power: power_kw_display + " kw",
             stop_triggered: shouldStop,
             state,
+          };
+
+          events.push(event);
+
+          console.table({
+            ...event,
+            charging_time: `${Math.floor(event.charging_time / 1000 / 60)}m${
+              (event.charging_time / 1000) % 60
+            }s`,
+            session_time: ` ${Math.floor(event.session_time / 1000 / 60)}m${
+              (event.session_time / 1000) % 60
+            }s`,
+            power: event.power_kw_display + " kw",
           });
+
+          // find out if the session_time is frozen
+          if (
+            events.length > 1 &&
+            event.session_time === events.at(events.length - 2).session_time
+          ) {
+            const t = STOP_BY_MS - event.session_time;
+            console.warn(
+              "session_time frozen, will stop session in " + t + " ..."
+            );
+            setTimeout(() => {
+              doFetch(
+                "https://account.chargepoint.com/account/v1/driver/station/stopSession",
+                `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
+              );
+            }, t);
+          }
         });
     });
 }
