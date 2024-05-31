@@ -34,6 +34,9 @@
 const events = []; // store all charging events
 window.EVENTS = events;
 
+const zombie = null;
+window.ZOMBIE = zombie;
+
 const STOP_BY_MS = 3200000; // 53.3333 minutes
 
 function doFetch(url, body = {}, method = "POST") {
@@ -65,7 +68,11 @@ function stopCharging(params = {}) {
 
       if (sessionId === undefined) {
         console.warn("no session found, waiting for plugin...");
+
+        clearTimeout(zombie?.timeout);
+        clearInterval(zombie?.interval);
         events.length = 0;
+
         return;
       }
 
@@ -94,6 +101,7 @@ function stopCharging(params = {}) {
             );
           }
           const event = {
+            time: new Date().getTime(),
             charging_time,
             session_time,
             device_id,
@@ -114,23 +122,34 @@ function stopCharging(params = {}) {
             session_time: ` ${Math.floor(event.session_time / 1000 / 60)}m${
               (event.session_time / 1000) % 60
             }s`,
-            power: event.power_kw_display + " kw",
           });
 
-          // find out if the session_time is frozen
-          if (
-            events.length > 1 &&
-            event.session_time === events.at(events.length - 2).session_time
-          ) {
+          /* handel zombie session */
+          const ts = events
+            .slice(-3)
+            .map((itm) => itm?.session_time)
+            .filter((itm) => itm > 0);
+
+          if (ts.length === 3 && ts[2] === ts[1] && ts[1] !== ts[0]) {
+            zombie = events.at(events.length - 2);
             const t = STOP_BY_MS - event.session_time;
+
             console.warn(
               "session_time frozen, will stop session in " + t + " ..."
             );
-            setTimeout(() => {
+
+            zombie.timeout = setTimeout(() => {
               doFetch(
                 "https://account.chargepoint.com/account/v1/driver/station/stopSession",
                 `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
               );
+
+              zombie.interval = setInterval(() => {
+                doFetch(
+                  "https://account.chargepoint.com/account/v1/driver/station/stopSession",
+                  `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
+                );
+              }, STOP_BY_MS);
             }, t);
           }
         });
