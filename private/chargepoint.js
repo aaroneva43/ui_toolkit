@@ -90,16 +90,6 @@ function stopCharging(params = {}) {
             power_kw_display,
           } = r?.charging_status || {};
 
-          var shouldStop =
-            (session_time > STOP_BY_MS || charging_time >= STOP_BY_MS) &&
-            stopStates.includes(state);
-
-          if (shouldStop) {
-            doFetch(
-              "https://account.chargepoint.com/account/v1/driver/station/stopSession",
-              `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
-            );
-          }
           const event = {
             time: new Date().getTime(),
             charging_time,
@@ -108,11 +98,33 @@ function stopCharging(params = {}) {
             session_id: sessionId,
             port_level,
             power: power_kw_display + " kw",
-            stop_triggered: shouldStop,
             state,
           };
 
           events.push(event);
+
+          // check if this is the 14th trial for the same session_id (5min*14=70min)
+          // garrentee to stop charging in case of zombie session
+          const is14th =
+            events.length >= 13 &&
+            events
+              .slice(-13)
+              .every(
+                (e) =>
+                  e.session_id === sessionId && stopStates.includes(e.state)
+              );
+
+          var shouldStop =
+            is14th ||
+            ((session_time > STOP_BY_MS || charging_time >= STOP_BY_MS) &&
+              stopStates.includes(state));
+
+          if (shouldStop) {
+            doFetch(
+              "https://account.chargepoint.com/account/v1/driver/station/stopSession",
+              `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
+            );
+          }
 
           console.table({
             ...event,
@@ -122,36 +134,8 @@ function stopCharging(params = {}) {
             session_time: ` ${Math.floor(event.session_time / 1000 / 60)}m${
               (event.session_time / 1000) % 60
             }s`,
+            should_stop: shouldStop + " " + (is14th ? "zombie" : ""),
           });
-
-          /* handel zombie session */
-          const ts = events
-            .slice(-3)
-            .map((itm) => itm?.session_time)
-            .filter((itm) => itm > 0);
-
-          if (ts.length === 3 && ts[2] === ts[1] && ts[1] !== ts[0]) {
-            zombie = events.at(events.length - 2);
-            const t = STOP_BY_MS - event.session_time;
-
-            console.warn(
-              "session_time frozen, will stop session in " + t + " ..."
-            );
-
-            zombie.timeout = setTimeout(() => {
-              doFetch(
-                "https://account.chargepoint.com/account/v1/driver/station/stopSession",
-                `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
-              );
-
-              zombie.interval = setInterval(() => {
-                doFetch(
-                  "https://account.chargepoint.com/account/v1/driver/station/stopSession",
-                  `{"deviceId":${device_id},"portNumber":${port_level},"sessionId":${sessionId}}`
-                );
-              }, STOP_BY_MS);
-            }, t);
-          }
         });
     });
 }
