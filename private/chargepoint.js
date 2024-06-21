@@ -16,6 +16,10 @@
   //   });
   // }
 
+  const STOP_BY_MS = 3200000; // 53.3333 minutes
+  const STOP_TRY_IN_MS = 240000; // 53.3333 minutes
+  const ZOMBIE_TIMES = Math.floor(3600000 / STOP_TRY_IN_MS);
+
   if (!window.updatingSession) {
     window.updatingSession = setInterval(() => {
       updateSession();
@@ -25,7 +29,7 @@
   if (!window.tryingStopCharging) {
     window.tryingStopCharging = setInterval(() => {
       stopCharging();
-    }, 240000);
+    }, STOP_TRY_IN_MS);
   }
 
   updateSession();
@@ -33,11 +37,6 @@
 
 const events = []; // store all charging events
 window.EVENTS = events;
-
-const zombie = null;
-window.ZOMBIE = zombie;
-
-const STOP_BY_MS = 3200000; // 53.3333 minutes
 
 function doFetch(url, body = {}, method = "POST") {
   return fetch(url, {
@@ -69,8 +68,6 @@ function stopCharging(params = {}) {
       if (sessionId === undefined) {
         console.warn("no session found, waiting for plugin...");
 
-        clearTimeout(zombie?.timeout);
-        clearInterval(zombie?.interval);
         events.length = 0;
 
         return;
@@ -105,17 +102,17 @@ function stopCharging(params = {}) {
 
           // check if this is the 14th trial for the same session_id (5min*14=70min)
           // garrentee to stop charging in case of zombie session
-          const is14th =
-            events.length >= 13 &&
+          const isNth =
+            events.length >= ZOMBIE_TIMES &&
             events
-              .slice(-13)
+              .slice(-ZOMBIE_TIMES)
               .every(
                 (e) =>
                   e.session_id === sessionId && stopStates.includes(e.state)
               );
 
           var shouldStop =
-            is14th ||
+            isNth ||
             ((session_time > STOP_BY_MS || charging_time >= STOP_BY_MS) &&
               stopStates.includes(state));
 
@@ -134,7 +131,7 @@ function stopCharging(params = {}) {
             session_time: ` ${Math.floor(event.session_time / 1000 / 60)}m${
               (event.session_time / 1000) % 60
             }s`,
-            should_stop: shouldStop + " " + (is14th ? "zombie" : ""),
+            should_stop: shouldStop + " " + (isNth ? "zombie" : ""),
           });
         });
     });
