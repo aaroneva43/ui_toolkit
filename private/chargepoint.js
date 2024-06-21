@@ -1,3 +1,7 @@
+const STOP_BY_MS = 3200000; // 53.3333 minutes
+const STOP_TRY_IN_MS = 240000; // 53.3333 minutes
+const ZOMBIE_TIMES = Math.floor(3600000 / STOP_TRY_IN_MS);
+
 (function main() {
   // if (!window.fetchOverride) {
   //   window.fetchOverride = window.fetch = new Proxy(window.fetch, {
@@ -52,9 +56,7 @@ function doFetch(url, body = {}, method = "POST") {
 
 function stopCharging(params = {}) {
   console.log("trying to stop charging at: ", new Date());
-  const STOP_BY_MS = 3200000; // 53.3333 minutes
-  const STOP_TRY_IN_MS = 240000; // 53.3333 minutes
-  const ZOMBIE_TIMES = Math.floor(3600000 / STOP_TRY_IN_MS);
+
   const stopStates = ["in_use", "fully_charged"];
   doFetch(
     "https://mc.chargepoint.com/map-prod/v2",
