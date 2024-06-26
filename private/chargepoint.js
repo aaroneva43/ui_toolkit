@@ -57,7 +57,7 @@ function doFetch(url, body = {}, method = "POST") {
 function stopCharging(params = {}) {
   console.log("trying to stop charging at: ", new Date());
 
-  const stopStates = ["in_use", "fully_charged"];
+  const stopStates = ["in_use", "fully_charged", "waiting"];
   doFetch(
     "https://mc.chargepoint.com/map-prod/v2",
     '{"user_status":{"mfhs":{}}}'
