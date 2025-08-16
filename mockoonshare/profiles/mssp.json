@@ -1,0 +1,365 @@
+{
+    "uuid": "77ada026-aad5-4acb-8111-7e8a0e8a966a",
+    "lastMigration": 33,
+    "name": "mssp",
+    "endpointPrefix": "",
+    "latency": 0,
+    "port": 8082,
+    "hostname": "",
+    "routes": [
+        {
+            "uuid": "9d5ba83c-69a1-4cd2-a483-9f660ce7fd1a",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "resource-api/v2/admin/config",
+            "responses": [
+                {
+                    "uuid": "616aa6fb-f472-457f-8933-e73bfb48f904",
+                    "body": "{\n  \"code\": 200,\n  \"data\": {\n    \"context\": {\n      \"site_uri\": \"/site/t3dyh1gz/ch1f8fed/\",\n      \"principal\": \"northamericaadmin\",\n      \"use_system_zone\": null,\n      \"ingress_zone_name\": null,\n      \"google_maps_api_key\": \"AIzaSyC6PL8kl5U76JSNkEJ6I4Us67ptY16UhZA\"\n    },\n    \"health\": {\n      \"status\": \"running\",\n      \"status_details\": {\n        \"security\": {\n          \"ui_mode\": \"/ui-pro\"\n        }\n      }\n    },\n    \"state\": {\n      \"version\": \"7.4.3\",\n      \"results\": {\n        \"debug_supported_daemons\": [\n          \"node\",\n          \"httpsd\",\n          \"cmdb\",\n          \"miglogd\",\n          \"csfd\",\n          \"sslvpnd\",\n          \"sslvpnd-saml\"\n        ],\n        \"snapshot_utc_time\": 1753072276706\n      }\n    },\n    \"version\": {\n      \"code\": 200,\n      \"data\": {\n        \"version\": \"build-daily-local_qa-000439 \"\n      },\n      \"source\": \"user\"\n    }\n  }\n}",
+                    "latency": 0,
+                    "statusCode": 202,
+                    "label": "",
+                    "headers": [
+                        {
+                            "key": "content-type",
+                            "value": "application/json; charset=utf-8"
+                        },
+                        {
+                            "key": "date",
+                            "value": "Thu, 24 Nov 2022 00:36:54 GMT"
+                        },
+                        {
+                            "key": "access-control-allow-origin",
+                            "value": "http://127.0.0.1:6001"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "type": "http",
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "ab111682-3493-4755-9c3d-801c30de104b",
+            "type": "http",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "api/v1/forticloud/portal-permissions",
+            "responses": [
+                {
+                    "uuid": "c5abc534-9326-452c-904a-1e7ab48d324f",
+                    "body": "[\n    {\n        \"account_id\": 1947630,\n        \"account_email\": \"sase.mssp+dev6@gmail.com\",\n        \"account_company\": \"company 1947630\",\n        \"user_id\": 857771,\n        \"user_email\": \"northamericaAdmin@mssp.com\",\n        \"user_name\": \"northamericaAdmin\",\n        \"user_type\": \"IAM\",\n        \"user_display_info\": [\n            {\n                \"name\": \"Account\",\n                \"value\": \"1947630/company 1947630\"\n            },\n            {\n                \"name\": \"Username\",\n                \"value\": \"northamericaAdmin\"\n            }\n        ],\n        \"role_name\": null,\n        \"is_master_user\": false,\n        \"master_user_name\": \"fname 1947630 lname 1947630\",\n        \"iam_user_name\": \"northamericaAdmin\",\n        \"iam_account_name\": null,\n        \"user_group\": null,\n        \"all_assets_access\": false,\n        \"user_auth_passed\": true,\n        \"user_auth_url\": null,\n        \"portals\": [\n            {\n                \"app_id\": 1,\n                \"app_name\": \"FortiCASB\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 2,\n                \"app_name\": \"FortiWebCloud\",\n                \"user_role\": \"Undefined\",\n                \"is_allow_access\": false,\n                \"user_permission\": null,\n                \"user_permission_attributes\": null,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 4,\n                \"app_name\": \"FortiExtender\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 5,\n                \"app_name\": \"FTC\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 9,\n                \"app_name\": \"FortiMailCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 10,\n                \"app_name\": \"FortiPresence\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 11,\n                \"app_name\": \"FortiManagerCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 15,\n                \"app_name\": \"FortiSASE\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Profile\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 17,\n                \"app_name\": \"FortiGateCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Profile\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 19,\n                \"app_name\": \"FortiAnalyzerCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 25,\n                \"app_name\": \"FortiGSLB\",\n                \"user_role\": \"Undefined\",\n                \"is_allow_access\": false,\n                \"user_permission\": null,\n                \"user_permission_attributes\": null,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 28,\n                \"app_name\": \"FortiClient\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Admin\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 29,\n                \"app_name\": \"FortiCNP\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 33,\n                \"app_name\": \"FortiConverterServiceCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 35,\n                \"app_name\": \"FortiDAST\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 36,\n                \"app_name\": \"FortiSandboxCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 37,\n                \"app_name\": \"FortiVoice\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 38,\n                \"app_name\": \"FortiSOAR\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 40,\n                \"app_name\": \"FortiPhish\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 41,\n                \"app_name\": \"FortiLAN\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 42,\n                \"app_name\": \"SOCaaS\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 44,\n                \"app_name\": \"FortiMonitor\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 45,\n                \"app_name\": \"FortiSIEM\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 46,\n                \"app_name\": \"FortiDevSec\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 47,\n                \"app_name\": \"SecurityAwarenessTraining\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 48,\n                \"app_name\": \"FortiZTP\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 49,\n                \"app_name\": \"FortiEDR\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 50,\n                \"app_name\": \"FortiCameraCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 51,\n                \"app_name\": \"FortiRecon\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 52,\n                \"app_name\": \"FortiTrustID\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Profile\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 54,\n                \"app_name\": \"FortiCareElite\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 55,\n                \"app_name\": \"FortiGateCNF\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 57,\n                \"app_name\": \"FortiDemo\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 58,\n                \"app_name\": \"Overlay-as-a-Service\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 59,\n                \"app_name\": \"MFGS\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 60,\n                \"app_name\": \"FortiNDRCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 61,\n                \"app_name\": \"FortiDeceptorCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 62,\n                \"app_name\": \"FortiABP\",\n                \"user_role\": \"Undefined\",\n                \"is_allow_access\": false,\n                \"user_permission\": null,\n                \"user_permission_attributes\": null,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 63,\n                \"app_name\": \"FortiPortalCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 66,\n                \"app_name\": \"FortiDevice\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 67,\n                \"app_name\": \"FGaaS\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 68,\n                \"app_name\": \"MFCTS\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"ReadWrite\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 69,\n                \"app_name\": \"FortiSASE-Sovereign\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Profile\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 71,\n                \"app_name\": \"FortiAppSecCloud\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Profile\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 73,\n                \"app_name\": \"FortiCNAPP\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 75,\n                \"app_name\": \"FortiDLP\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 76,\n                \"app_name\": \"FortiTIP\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 77,\n                \"app_name\": \"FortiCART\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 78,\n                \"app_name\": \"FortiMail-WS\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 80,\n                \"app_name\": \"FortiCASB-SSPM\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 100,\n                \"app_name\": \"IAMPortal\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Profile\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 110,\n                \"app_name\": \"AMPortal\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Profile\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 120,\n                \"app_name\": \"FlexVM\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 140,\n                \"app_name\": \"ELAPortal\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"app_id\": 160,\n                \"app_name\": \"OrganizationPortal\",\n                \"user_role\": null,\n                \"is_allow_access\": true,\n                \"user_permission\": \"Admin\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"app_id\": 300,\n                \"app_name\": \"FortiTest Permissions\",\n                \"user_role\": null,\n                \"is_allow_access\": false,\n                \"user_permission\": \"Denied\",\n                \"user_permission_attributes\": [],\n                \"visibility\": \"Hide\"\n            }\n        ],\n        \"user_menu\": [\n            {\n                \"item_id\": 10200,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 10204,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 10205,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10208,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10210,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10220,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 10222,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 10225,\n                \"visibility\": \"ShowEnabled\"\n            }\n        ],\n        \"support_menu\": [\n            {\n                \"item_id\": 54,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1511006,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 1511011,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 1511016,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 1511021,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1511026,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1511031,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 1511036,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 1511046,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1511051,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1511061,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1511066,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 57,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 10052,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10056,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10060,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10062,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10066,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10068,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10070,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 10072,\n                \"visibility\": \"ShowEnabled\"\n            },\n            {\n                \"item_id\": 1513006,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1513016,\n                \"visibility\": \"Hide\"\n            },\n            {\n                \"item_id\": 1513031,\n                \"visibility\": \"Hide\"\n            }\n        ]\n    }\n]",
+                    "latency": 0,
+                    "statusCode": 202,
+                    "label": "",
+                    "headers": [],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "1a651b30-fbc0-414e-b21f-f9ac06a5f9ab",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "api/v1/setting/permission/tenants/:tenantId/license",
+            "responses": [
+                {
+                    "uuid": "39a076e5-f8f3-4f2a-a86a-54e183b6c38a",
+                    "body": "{\n  \"status\": \"all_users_entitled\",\n  \"serial_number\": \"FOVSAE0000000092\",\n  \"start_date\": \"2025-06-10T00:00:00-07:00\",\n  \"end_date\": \"2027-06-10T00:00:00-07:00\",\n  \"account_entitlement\": {\n    \"availability\": true\n  },\n  \"is_decommissioned\": false,\n  \"user_licenses\": {\n    \"FEMSSSTM25090172\": {\n      \"serial_number\": \"FEMSSSTM25090172\",\n      \"start_date\": \"2025-06-11T00:00:00-07:00\",\n      \"end_date\": \"2026-06-11T00:00:00-07:00\",\n      \"user_quantity\": 100,\n      \"user_is_decommissioned\": false,\n      \"user_support_info\": [\n        {\n          \"user_support_type\": 229,\n          \"user_support_level\": 6,\n          \"user_support_type_desc\": \"FortiClient ZTNA & CASB (users)\",\n          \"user_support_level_desc\": \"Web/Online\"\n        },\n        {\n          \"user_support_type\": 230,\n          \"user_support_level\": 6,\n          \"user_support_type_desc\": \"FortiClient ZTNA, EPP & CASB (users)\",\n          \"user_support_level_desc\": \"Web/Online\"\n        }\n      ],\n      \"status\": \"entitled\",\n      \"contract_list\": [\n        {\n          \"status\": \"entitled\",\n          \"end_date\": \"2026-06-11T09:39:21-07:00\",\n          \"start_date\": \"2025-06-11T09:39:21-07:00\",\n          \"user_quantity\": 100\n        }\n      ],\n      \"aggregated_contract_list\": [\n        {\n          \"status\": \"entitled\",\n          \"start_date\": \"2025-06-11T09:39:21-07:00\",\n          \"end_date\": \"2026-06-11T09:39:21-07:00\",\n          \"user_quantity\": 100\n        }\n      ]\n    }\n  },\n  \"user_total_quantity\": 100\n}",
+                    "latency": 0,
+                    "statusCode": 202,
+                    "label": "",
+                    "headers": [
+                        {
+                            "key": "content-type",
+                            "value": "application/json; charset=utf-8"
+                        },
+                        {
+                            "key": "date",
+                            "value": "Thu, 24 Nov 2022 00:36:54 GMT"
+                        },
+                        {
+                            "key": "access-control-allow-origin",
+                            "value": "http://127.0.0.1:6001"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "type": "http",
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "b03e4140-918e-4be8-bf06-6ca171dad87b",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "api/v1/security/sites/:siteId/hubs/common",
+            "responses": [
+                {
+                    "uuid": "bf0423c8-8e38-493e-8866-149b07c2f6d8",
+                    "body": "{\n  \"code\": 200,\n  \"data\": {\n    \"config_state\": \"success\",\n    \"bgp_design\": \"overlay\",\n    \"interface\": \"port2\",\n    \"bgp_router_ids_subnet\": \"10.251.222.0/27\",\n    \"as_number\": \"65001\",\n    \"recursive_next_hop\": true,\n    \"sdwan_rule_enable\": true,\n    \"sdwan_health_check_vm\": \"10.11.11.11\",\n    \"additional_parameters\": {}\n  }\n}",
+                    "latency": 0,
+                    "statusCode": 202,
+                    "label": "",
+                    "headers": [
+                        {
+                            "key": "content-type",
+                            "value": "application/json; charset=utf-8"
+                        },
+                        {
+                            "key": "date",
+                            "value": "Thu, 24 Nov 2022 00:36:54 GMT"
+                        },
+                        {
+                            "key": "access-control-allow-origin",
+                            "value": "http://127.0.0.1:6001"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "type": "http",
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "a451308b-714e-4481-863d-dd4bd93519c8",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "resource-api/v2/security/secure-web-gateway",
+            "responses": [
+                {
+                    "uuid": "ae6e4127-41f5-49f1-b55a-254b8e880b6a",
+                    "body": "{\n  \"code\": 200,\n  \"data\": {\n    \"proxyPort\": 8080,\n    \"state\": \"success\",\n    \"fqdn\": [\n      \"b4enku9z-hl839ci6-SanJose26uwz8yk-swg.gslb.dev.fortisase-sovereign.com\"\n    ],\n    \"pacUrl\": \"https://forti-dolphin-pacfile-local-dev.s3.us-east-2.amazonaws.com/staging/proxy-26uwz8yk.pac\",\n    \"isEnabled\": true,\n    \"turboFqdn\": \"turbo-26uwz8yk.edge.gslb.dev.fortisase-sovereign.com\",\n    \"proxyServers\": [\n      {\n        \"fqdn\": \"b4enku9z-hl839ci6-SanJose26uwz8yk-swg.gslb.dev.fortisase-sovereign.com\",\n        \"alias\": \"San Jose\"\n      }\n    ],\n    \"status\": {\n      \"steps\": [\n        {\n          \"message\": \"Enable Secure Web Gateway Configuration\",\n          \"alias\": \"San Jose\",\n          \"status\": \"success\"\n        },\n        {\n          \"message\": \"PAC File Creation\",\n          \"alias\": \"\",\n          \"status\": \"success\"\n        },\n        {\n          \"message\": \"Network Infrastructure Setup\",\n          \"alias\": \"San Jose\",\n          \"status\": \"success\"\n        }\n      ],\n      \"code\": 0,\n      \"timestamp\": 1752613596\n    }\n  }\n}",
+                    "latency": 0,
+                    "statusCode": 202,
+                    "label": "",
+                    "headers": [
+                        {
+                            "key": "content-type",
+                            "value": "application/json; charset=utf-8"
+                        },
+                        {
+                            "key": "date",
+                            "value": "Thu, 24 Nov 2022 00:36:54 GMT"
+                        },
+                        {
+                            "key": "access-control-allow-origin",
+                            "value": "http://127.0.0.1:6001"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "type": "http",
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "ac89be4b-d16d-4b57-8ffb-49fc3723071f",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "resource-api/v2/admin/notifications",
+            "responses": [
+                {
+                    "uuid": "1dd95535-539e-4f46-9ef2-e4f5768d911c",
+                    "body": "{\n  \"code\": 200,\n  \"data\": []\n}",
+                    "latency": 0,
+                    "statusCode": 202,
+                    "label": "",
+                    "headers": [
+                        {
+                            "key": "content-type",
+                            "value": "application/json; charset=utf-8"
+                        },
+                        {
+                            "key": "date",
+                            "value": "Thu, 24 Nov 2022 00:36:54 GMT"
+                        },
+                        {
+                            "key": "access-control-allow-origin",
+                            "value": "http://127.0.0.1:6001"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "type": "http",
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "2bf04dd3-8eb8-4180-acb8-ee5eda10853e",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "api/v2/security/sites/:siteId/config_state",
+            "responses": [
+                {
+                    "uuid": "f3d90e7b-b88c-4983-8e00-ce8d4ad74a01",
+                    "body": "{\n  \"code\": 200,\n  \"data\": {\n    \"tenant_id\": \"hl839ci6\",\n    \"site_id\": \"26uwz8yk\",\n    \"state\": \"install_done\",\n    \"dev_status\": \"installed\",\n    \"changes2sync\": false,\n    \"preview_start_time\": null,\n    \"preview_percentage\": null,\n    \"preview_task_id\": null,\n    \"install_start_time\": \"2025-07-19T00:05:09.695085+00:00\",\n    \"install_percentage\": 100,\n    \"install_task_id\": 85,\n    \"install_adom_revision\": null,\n    \"preview_tasks\": null,\n    \"last_successful_adom_revision\": null,\n    \"last_deployment\": {\n      \"diff\": null,\n      \"time\": \"2025-07-19T00:05:42.233150+00:00\"\n    },\n    \"additional_parameters\": null,\n    \"install_pause\": 0,\n    \"_updated\": \"2025-07-19T00:05:42.255864+00:00\"\n  }\n}",
+                    "latency": 0,
+                    "statusCode": 202,
+                    "label": "",
+                    "headers": [
+                        {
+                            "key": "content-type",
+                            "value": "application/json; charset=utf-8"
+                        },
+                        {
+                            "key": "date",
+                            "value": "Thu, 24 Nov 2022 00:36:54 GMT"
+                        },
+                        {
+                            "key": "access-control-allow-origin",
+                            "value": "http://127.0.0.1:6001"
+                        }
+                    ],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": false,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "type": "http",
+            "streamingMode": null,
+            "streamingInterval": 0
+        }
+    ],
+    "proxyMode": true,
+    "proxyHost": "",
+    "proxyRemovePrefix": false,
+    "tlsOptions": {
+        "enabled": false,
+        "type": "CERT",
+        "pfxPath": "",
+        "certPath": "",
+        "keyPath": "",
+        "caPath": "",
+        "passphrase": ""
+    },
+    "cors": true,
+    "headers": [],
+    "proxyReqHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "proxyResHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "data": [],
+    "folders": [],
+    "rootChildren": [
+        {
+            "type": "route",
+            "uuid": "9d5ba83c-69a1-4cd2-a483-9f660ce7fd1a"
+        },
+        {
+            "type": "route",
+            "uuid": "ab111682-3493-4755-9c3d-801c30de104b"
+        },
+        {
+            "type": "route",
+            "uuid": "1a651b30-fbc0-414e-b21f-f9ac06a5f9ab"
+        },
+        {
+            "type": "route",
+            "uuid": "b03e4140-918e-4be8-bf06-6ca171dad87b"
+        },
+        {
+            "type": "route",
+            "uuid": "a451308b-714e-4481-863d-dd4bd93519c8"
+        },
+        {
+            "type": "route",
+            "uuid": "ac89be4b-d16d-4b57-8ffb-49fc3723071f"
+        },
+        {
+            "type": "route",
+            "uuid": "2bf04dd3-8eb8-4180-acb8-ee5eda10853e"
+        }
+    ],
+    "callbacks": []
+}

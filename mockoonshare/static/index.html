@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mockoon Profiles</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+      }
+      td a:hover {
+      }
+      .endpoints a {
+        color: #333;
+        font-size: smaller;
+        display: block;
+      }
+      .action-btn {
+        cursor: pointer;
+        margin-left: 6px;
+        color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>This is a website that shares Mockoon Profiles within the team.</h2>
+    <br />
+    <p>
+      You can run
+      <b>npx @mockoon/cli start --data http://10.106.17.18:8201/mssp.json </b>
+      to run it locally. (clicking the 📋 icon will copy the command)
+    </p>
+    <p>
+      And you are welcome to share your Mockoon Profile with
+      <b>scp -r [your_mockoon_json] admin@10.106.17.18:~/mockoonshare/profiles/ </b>
+      pwd:fortinet (use a different name to avoid override)
+    </p>
+
+    <p><span class="action-btn">Add WHISTLE RULE like:&nbsp; ⬇️</span> to route an API call to a Mockoon endpoint</p>
+    <p>
+      /.+<strong><u>(resource-api/v2/admin/config\?.+)</u></strong
+      >/ https://10.106.17.18:8200/mockoonshare/<span
+        style="background-color: rgb(247, 218, 100)"
+        >mssp</span
+      >/<strong><u>$1</u></strong>
+    </p>
+    <p></p>
+
+    <table id="profilesTable">
+      <tbody>
+        <!-- JS will populate rows here -->
+      </tbody>
+    </table>
+
+    <script>
+      async function loadProfiles() {
+        try {
+          const response = await fetch("/api/profiles");
+          const data = await response.json();
+
+          const tbody = document.querySelector("#profilesTable tbody");
+          tbody.innerHTML = "";
+
+          data.forEach((file) => {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            const link = document.createElement("a");
+            link.href = `http://${location.hostname}:8201/${file.name}`;
+            link.textContent = file.name;
+            link.target = "_blank";
+
+            const copyBtn = document.createElement("span");
+            copyBtn.textContent = "📋";
+            copyBtn.className = "action-btn";
+            copyBtn.title = "Copy path";
+            copyBtn.onclick = () => {
+              navigator.clipboard
+                .writeText(
+                  "npx @mockoon/cli start --data http://10.106.17.18:8201/" +
+                    file.path
+                )
+                .then(() => {
+                  copyBtn.textContent = "✅";
+                  setTimeout(() => (copyBtn.textContent = "📋"), 1000);
+                });
+            };
+
+            const runBtn = document.createElement("span");
+            runBtn.textContent = file.running ? "🚫" : "▶️";
+            runBtn.className = "action-btn";
+            runBtn.title = file.running ? "Stop profile" : "Start profile";
+
+            const whistleBtn = document.createElement("span");
+            whistleBtn.className = "action-btn";
+            whistleBtn.title = "Copy Whistle Rules";
+            whistleBtn.style.backgroundImage = "url('data:image/x-icon;base64,AAABAAEAQEAAAAEAIAAoQgAAFgAAACgAAABAAAAAgAAAAAEAIAAAAAAAAEAAABILAAASCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADu7u4A7u7uAO7u7gru7u4k7u7uRe7u7nnu7u6o7u7uv+7u7tju7u7a7u7u2u7u7tru7u7a7u7u1+7u7rvu7u6l7u7ucu7u7kHu7u4h7u7uCO7u7gDu7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4H7u7uNe7u7nTu7u647u7u3u7u7vLu7u797u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vzu7u7w7u7u2+7u7rLu7u5r7u7uL+7u7gXu7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADu7u4A7u7uAe7u7hju7u5l7u7usu7u7uzu7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/u7u7uju7u6r7u7uW+7u7hPu7u4A7u7uAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4A7u7uGu7u7m/u7u7P7u7u++7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vnu7u7H7u7uYu7u7hTu7u4A7u7uAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4K7u7uXe7u7s3u7u797u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vvu7u7D7u7uT+7u7gbu7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7gDu7u4s7u7uqe7u7vfu7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vLu7u6Z7u7uIe7u7gDu7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7gTu7u5Z7u7u2O7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7svu7u5I7u7uAe7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7gvu7u587u7u8u7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u6e7u7mnu7u4H7u7uAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7g/u7u6R7u7u+u7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u717u7uge7u7gru7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7hDu7u6Z7u7u/O7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vnu7u6J7u7uCu7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7gvu7u6T7u7u/O7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u+O7u7oLu7u4H7u7uAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7gXu7u5/7u7u+u7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u727u7uae7u7gHu7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7gDu7u5d7u7u8+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7uju7u5I7u7uAO7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4x7u7u2+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u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7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u6q7u7uBe7u7gDu7u4A7u7uQu7u7vPu7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v+Dg4P/MTEx/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/82Njb/sbGx//Hx8f/u7u7/8PDw/9ra2v9hYWH/NjY2/0pKSv8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zk5Of+0tLT/8fHx/+7u7v/w8PD/2dnZ/11dXf81NTX/mZmZ/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u6O7u7jDu7u4A7u7uAO7u7obu7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+/v7//d3d3/U1NT/zExMf8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8xMTH/VlZW/93d3f/v7+//7u7u/+7u7v/w8PD/ysrK/01NTf8wMDD/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf9ZWVn/4eHh/+/v7//u7u7/7u7u//Dw8P/CwsL/SEhI/z8/P/+4uLj/8PDw/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u5q7u7uAO7u7hHu7u7H7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/x8fH/q6ur/zY2Nv8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MTEx/4yMjP/v7+//7u7u/+7u7v/u7u7/7u7u//Dw8P+QkJD/MTEx/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8yMjL/lZWV//Dw8P/u7u7/7u7u/+7u7v/u7u7/8PDw/62trf86Ojr/VFRU/9LS0v/w8PD/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7use7u7gju7u4x7u7u5+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/6enp/3Fxcf8wMDD/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MjIy/0BAQP/Hx8f/8PDw/+7u7v/u7u7/7u7u/+7u7v/n5+f/aWlp/zExMf8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8yMjL/QEBA/8jIyP/w8PD/7u7u/+7u7v/u7u7/7u7u/+7u7v/s7Oz/kJCQ/zMzM/9vb2//4+Pj/+/v7//u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7tru7u4h7u7uW+7u7vju7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/8PDw/8vLy/9CQkL/MjIy/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zAwMP9lZWX/5ubm/+/v7//u7u7/7u7u/+7u7v/w8PD/ysrK/0FBQf8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MDAw/2xsbP/o6Oj/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7+/v/+Xl5f9zc3P/MjIy/4qKiv/s7Oz/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7w7u7uQe7u7pnu7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u//Dw8P+ZmZn/MjIy/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/o6Oj//Hx8f/u7u7/7u7u/+7u7v/u7u7/8PDw/5GRkf8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zU1Nf+oqKj/8fHx/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/w8PD/19fX/1xcXP86Ojr/rq6u//Dw8P/u7u7/7u7u/+7u7v/u7u7/7u7u/O7u7nHu7u657u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+/v7//i4uL/XFxc/zExMf8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8xMTH/TU1N/9XV1f/w8PD/7u7u/+7u7v/u7u7/7+/v/+Dg4P9ZWVn/MTEx/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf9RUVH/29vb/+/v7//u7u7/7u7u/+7u7v/u7u7/7u7u/+/v7//w8PD/6urq/+Hh4f+tra3/QEBA/0tLS//Hx8f/8PDw/+7u7v/u7u7/7u7u/+7u7v/u7u6l7u7u1+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/x8fH/uLi4/zo6Ov8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MDAw/319ff/u7u7/7u7u/+7u7v/u7u7/7u7u//Hx8f+zs7P/ODg4/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8wMDD/fn5+/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u//Dw8P/i4uL/p6en/2xsbP9UVFT/TExM/zw8PP8wMDD/YmJi/9zc3P/w8PD/7u7u/+7u7v/u7u7/7u7uu+7u7uDu7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/4CAgP8wMDD/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zk5Of+1tbX/8fHx/+7u7v/u7u7/7u7u/+7u7v/t7e3/fn5+/zAwMP8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8yMjL/Ozs7/729vf/x8fH/7u7u/+7u7v/u7u7/7u7u//Dw8P/Q0ND/ampq/zU1Nf8wMDD/MTEx/zExMf8yMjL/MzMz/zIyMv9+fn7/5+fn/+/v7//u7u7/7u7u/+7u7tfu7u7y7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7+/v/9jY2P9PT0//MTEx/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf9aWlr/4uLi/+/v7//u7u7/7u7u/+7u7v/w8PD/1NTU/0pKSv8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MTEx/2BgYP/j4+P/7+/v/+7u7v/u7u7/7u7u/+/v7//X19f/XV1d/zAwMP8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/NTU1/46Ojv/r6+v/7u7u/+7u7v/u7u7a7u7u/e7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u//Hx8f+mpqb/NDQ0/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8yMjL/lpaW//Dw8P/u7u7/7u7u/+7u7v/u7u7/8PDw/6CgoP80NDT/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zIyMv+ampr/8fHx/+7u7v/u7u7/7u7u/+7u7v/t7e3/g4OD/zExMf8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zIyMv89PT3/vLy8//Hx8f/u7u7/7u7u2u7u7v3u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/o6Oj/ampq/zAwMP8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8yMjL/QEBA/8jIyP/w8PD/7u7u/+7u7v/u7u7/7u7u/+jo6P9nZ2f/MDAw/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zIyMv9DQ0P/ysrK//Dw8P/u7u7/7u7u/+7u7v/w8PD/z8/P/0dHR/8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MDAw/3h4eP/r6+v/7u7u/+7u7tru7u707u7u/+7u7v/u7u7/7u7u/+7u7v/w8PD/zMzM/0JCQv8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MDAw/2xsbP/o6Oj/7u7u/+7u7v/u7u7/7u7u//Dw8P/Gxsb/QUFB/zIyMv8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8wMDD/cHBw/+rq6v/u7u7/7u7u/+7u7v/u7u7/8fHx/6qqqv80NDT/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf9QUFD/3d3d/+/v7//u7u7a7u7u4u7u7v/u7u7/7u7u/+7u7v/u7u7/8PDw/5OTk/8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zU1Nf+mpqb/8fHx/+7u7v/u7u7/7u7u/+7u7v/w8PD/jY2N/zExMf8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/Nzc3/62trf/x8fH/7u7u/+7u7v/u7u7/7u7u//Hx8f+hoaH/MjIy/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8yMjL/SUlJ/9jY2P/v7+//7u7u2O7u7tnu7u7/7u7u/+7u7v/u7u7/7+/v/+Dg4P9bW1v/MTEx/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf9PT0//2dnZ/+/v7//u7u7/7u7u/+7u7v/v7+//3Nzc/1RUVP8xMTH/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MTEx/09PT//a2tr/7+/v/+7u7v/u7u7/7u7u/+7u7v/x8fH/oqKi/zIyMv8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MjIy/0pKSv/Y2Nj/7+/v/+7u7r/u7u697u7u/+7u7v/u7u7/7u7u//Hx8f+0tLT/Nzc3/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8wMDD/fHx8/+3t7f/u7u7/7u7u/+7u7v/u7u7/8fHx/7Ozs/83Nzf/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf+FhYX/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/8fHx/7a2tv83Nzf/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf9aWlr/4uLi/+/v7//u7u6n7u7un+7u7v/u7u7/7u7u/+7u7v/t7e3/f39//zAwMP8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8yMjL/Ojo6/7u7u//x8fH/7u7u/+7u7v/u7u7/7u7u/+vr6/92dnb/MDAw/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zIyMv88PDz/v7+///Hx8f/u7u7/7u7u/+7u7v/u7u7/7u7u/+/v7//e3t7/WVlZ/zAwMP8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8xMTH/k5OT/+/v7//u7u797u7uee7u7mLu7u757u7u/+7u7v/w8PD/1NTU/0pKSv8yMjL/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MTEx/19fX//i4uL/7+/v/+7u7v/u7u7/7u7u//Dw8P/Q0ND/R0dH/zIyMv8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8wMDD/ZmZm/+bm5v/v7+//7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/8PDw/6enp/84ODj/MjIy/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8wMDD/U1NT/9TU1P/w8PD/7u7u8u7u7kbu7u427u7u6u7u7v/u7u7/8PDw/6CgoP80NDT/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zIyMv+ZmZn/8fHx/+7u7v/u7u7/7u7u/+7u7v/x8fH/mpqa/zIyMv8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MjIy/5qamv/x8fH/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+/v7//p6en/ioqK/zc3N/8xMTH/MzMz/zMzM/8zMzP/MzMz/zIyMv8wMDD/SkpK/7u7u//w8PD/7u7u/+7u7t3u7u4k7u7uFO7u7szu7u7/7u7u/+fn5/9lZWX/MDAw/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zIyMv9DQ0P/ysrK//Dw8P/u7u7/7u7u/+7u7v/v7+//5ubm/2VlZf8wMDD/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MjIy/0hISP/R0dH/8PDw/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7+/v/+np6f+jo6P/UlJS/zQ0NP8xMTH/MDAw/zExMf86Ojr/a2tr/8TExP/v7+//7u7u/+7u7v/u7u647u7uCu7u7gDu7u6P7u7u//Dw8P/FxcX/QEBA/zIyMv8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8wMDD/cXFx/+vr6//u7u7/7u7u/+7u7v/u7u7/8fHx/8DAwP89PT3/MjIy/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zAwMP94eHj/6+vr/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/v7+//7+/v/9jY2P+tra3/j4+P/4SEhP+ampr/vLy8/+Xl5f/w8PD/7u7u/+7u7v/u7u7/7u7uc+7u7gDu7u4A7u7uSe7u7vfv7+//jY2N/zExMf8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/Nzc3/66urv/x8fH/7u7u/+7u7v/u7u7/7u7u/+7u7v+Hh4f/MTEx/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/83Nzf/s7Oz//Hx8f/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/v7+//8fHx//Dw8P/w8PD/8fHx//Hx8f/v7+//7u7u/+7u7v/u7u7/7u7u7O7u7jbu7u4A7u7uAO7u7hLv7+/H3d3d/1RUVP8xMTH/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MTEx/1BQUP/b29v/7+/v/+7u7v/u7u7/7u7u/+/v7//c3Nz/UVFR/zExMf8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8xMTH/VFRU/9zc3P/v7+//7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7rHu7u4H7u7uAO7u7gDv7+8A9PT0fLS0tP83Nzf/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zExMf+Ghob/7u7u/+7u7v/u7u7/7u7u/+7u7v/x8fH/r6+v/zc3N/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MTEx/4yMjP/v7+//7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vzu7u5l7u7uAAAAAAAAAAAA1dXVAN/f3ylpaWniMjIy/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zMzM/8zMzP/MzMz/zIyMv89PT3/wMDA//Hx8f/u7u7/7u7u/+7u7v/u7u7/6+vr/3Jycv8wMDD/MzMz/zMzM/8zMzP/MzMz/zMz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7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vru7u587u7uBO7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4T7u7uq+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vzu7u6R7u7uC+7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7hzu7u6y7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vzu7u6Z7u7uD+7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADu7u4A7u7uHO7u7qvu7u797u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vru7u6T7u7uEO7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4T7u7uj+7u7vfu7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7vPu7u6A7u7uDO7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u7uAO7u7gnu7u5r7u7u5u7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7tzu7u5c7u7uBe7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADu7u4A7u7uAe7u7j/u7u697u7u++7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u+e7u7q/u7u4x7u7uAO7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4A7u7uEe7u7nTu7u7d7u7u/u7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7+7u7u0+7u7mbu7u4N7u7uAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4B7u7uJu7u7oXu7u7g7u7u/u7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v3u7u7Z7u7ueu7u7h7u7u4A7u7uAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4C7u7uKO7u7nzu7u7I7u7u9+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u8+7u7r/u7u5y7u7uIO7u7gHu7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7gDu7u4A7u7uEu7u7kju7u6O7u7uzO7u7uru7u767u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u/+7u7v/u7u7/7u7u+O7u7ufu7u7H7u7uhu7u7kHu7u4N7u7uAO7u7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADu7u4A7u7uA+7u7hTu7u417u7uYu7u7p7u7u6+7u7u2O7u7uLu7u707u7u/e7u7vzu7u7y7u7u4O7u7tfu7u667u7ume7u7lvu7u4w7u7uEe7u7gLu7u4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///8AAA///////AAAA//////gAAAA/////8AAAAA/////AAAAAA////4AAAAAB///+AAAAAAB///wAAAAAAD//+AAAAAAAH//wAAAAAAAP/+AAAAAAAAf/wAAAAAAAA//AAAAAAAAD/4AAAAAAAAH/AAAAAAAAAP8AAAAAAAAA/gAAAAAAAAB+AAAAAAAAAHwAAAAAAAAAPAAAAAAAAAA4AAAAAAAAABgAAAAAAAAAGAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAGAAAAAAAAAAcAAAAAAAAADwAAAAAAAAAPAAAAAAAAAB8AAAAAAAAAHgAAAAAAAAA+AAAAAAAAAD/gAAAAAAAAf+AAAAAAAAD/8AAAAAAAAP/4AAAAAAAB//wAAAAAAAP//gAAAAAAB///AAAAAAAP//+AAAAAAB///8AAAAAAf///8AAAAAD////4AAAAA/////4AAAAH/////4AAAD//////8AAA///8=')";
+            whistleBtn.style.backgroundSize = "16px 16px";
+            whistleBtn.style.backgroundRepeat = "no-repeat";
+            whistleBtn.style.backgroundPosition = "center";
+            whistleBtn.style.padding = "4px 8px";
+            whistleBtn.onclick = () => {
+              const profileName = file.name.split(".").shift();
+              
+              try {
+                // Use the same pattern as genEndpointElement
+                const endpoints = JSON.parse(file.content).routes.map(
+                  (route) => route.endpoint
+                );
+                
+                // Generate multiple Whistle rules, one for each endpoint
+                const whistleRules = endpoints.map(endpoint => {
+                  // Escape special regex characters in the endpoint path
+                  const escapedEndpoint = endpoint.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  return `/.+(${escapedEndpoint}.*)/ https://10.106.17.18:8200/mockoonshare/${profileName}/$1`;
+                }).join('\n');
+                
+                navigator.clipboard
+                  .writeText(whistleRules)
+                  .then(() => {
+                    whistleBtn.textContent = "✅";
+                    setTimeout(() => (whistleBtn.textContent = ""), 1000);
+                  })
+                  .catch((error) => {
+                    console.error("Failed to copy Whistle rules:", error);
+                  });
+              } catch (error) {
+                console.error("Failed to parse profile content:", error);
+                // Fallback to the original single rule
+                const whistleRule = `/.+(resource-api\\/v2\\/admin\\/config\\?.+)/ https://10.106.17.18:8200/mockoonshare/${profileName}/$1`;
+                navigator.clipboard.writeText(whistleRule);
+              }
+            };
+
+            const genEndpointElement = (file, parentEl) => {
+              const endpointsElement = parentEl.querySelector(".endpoints");
+              if (endpointsElement) {
+                endpointsElement.remove();
+              } else {
+                const endpoints = JSON.parse(file.content).routes.map(
+                  (route) => route.endpoint
+                );
+                const endpointsElement = document.createElement("div");
+                endpointsElement.className = "endpoints";
+                endpoints.forEach((endpoint) => {
+                  const endpointLink = document.createElement("a");
+                  endpointLink.href = `${
+                    location.origin
+                  }/mockoonshare/${file.name.split(".").shift()}/${endpoint}`;
+                  endpointLink.textContent = `/mockoonshare/${file.name
+                    .split(".")
+                    .shift()}/${endpoint}`;
+                  endpointLink.target = "_blank";
+                  endpointsElement.appendChild(endpointLink);
+                });
+                return endpointsElement;
+              }
+            };
+
+            runBtn.onclick = () => {
+              const isRunning = runBtn.textContent === "🚫";
+              const action = isRunning ? "stop1" : "start";
+              
+              runBtn.textContent = "⏳";
+              
+              fetch(`/api/profiles/${file.name.split(".").shift()}/${action}`, {
+                method: "PUT",
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                  }
+                  return response.json();
+                })
+                .then((data) => {
+                  console.log(`Profile ${action}ed:`, data);
+                  
+                  if (action === "start") {
+                    runBtn.textContent = "🚫";
+                    runBtn.title = "Stop profile";
+                    try {
+                      const endpointsElement = genEndpointElement(file, runBtn.parentElement);
+                      if (!endpointsElement) {
+                        console.error("Failed to generate endpoints element.");
+                        return;
+                      }
+                      runBtn.parentElement.appendChild(endpointsElement);
+                    } catch (error) {
+                      console.error("Error updating run button:", error);
+                    }
+                  } else {
+                    runBtn.textContent = "▶️";
+                    runBtn.title = "Start profile";
+                    // Remove endpoints display
+                    const endpointsElement = runBtn.parentElement.querySelector(".endpoints");
+                    if (endpointsElement) {
+                      endpointsElement.remove();
+                    }
+                  }
+                })
+                .catch((error) => {
+                  console.error(`Error ${action}ing profile:`, error);
+                  // Reset button state on error
+                  runBtn.textContent = isRunning ? "🚫" : "▶️";
+                });
+            };
+
+            cell.appendChild(link);
+            cell.appendChild(copyBtn);
+            cell.appendChild(runBtn);
+            cell.appendChild(whistleBtn);
+            row.appendChild(cell);
+            tbody.appendChild(row);
+
+            if (file.running) {
+              const endpointsElement = genEndpointElement(file, runBtn.parentElement);
+              if (endpointsElement) {
+                runBtn.parentElement.appendChild(endpointsElement);
+              }
+            }
+          });
+        } catch (error) {
+          console.error("Failed to load profiles:", error);
+        }
+      }
+
+      loadProfiles();
+    </script>
+  </body>
+</html>
