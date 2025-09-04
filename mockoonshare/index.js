@@ -21,6 +21,7 @@ const PORT = 8200;
 const FILEPORT = 8201;
 
 const PROFILES_DIR = path.join(__dirname, "profiles");
+const SCHEMA_DIR = path.join(__dirname, "schema");
 const STATIC_DIR = path.join(__dirname, "static");
 
 const registeredProfiles = new Map();
@@ -30,8 +31,10 @@ const portRange = { start: 14300, end: 14399 };
 
 app.use(express.static(STATIC_DIR));
 app.use(express.static(PROFILES_DIR));
+app.use(express.static(SCHEMA_DIR));
 
 fileApp.use(express.static(path.join(__dirname, "profiles")));
+fileApp.use(express.static(path.join(__dirname, "schema")));
 fileApp.get("/", (req, res) => res.send("profiles"));
 
 function getAllFiles(dir, baseDir = dir, result = []) {
@@ -164,17 +167,21 @@ app.put("/api/profiles/:id/start", async (req, res) => {
     usedPorts.add(port);
 
     // Generate OpenAPI schema in background
-    const schemaPath = path.join(PROFILES_DIR, `${id}-schema.json`);
+    const schemaPath = path.join(SCHEMA_DIR, `${id}.json`);
+    let schemaPathResult = null;
     try {
       console.log(`Generating OpenAPI schema for profile '${id}'`);
       const schemaResult = await $`npx mockoon-cli export -i ${profilePath} -o ${schemaPath}`.nothrow();
       if (schemaResult.exitCode === 0) {
         console.log(`OpenAPI schema generated successfully for '${id}' at ${schemaPath}`);
+        schemaPathResult = schemaPath;
       } else {
         console.warn(`Failed to generate schema for ${id}:`, schemaResult.stderr);
+        schemaPathResult = null;
       }
     } catch (schemaError) {
       console.warn(`Error generating schema for ${id}:`, schemaError.message);
+      schemaPathResult = null;
     }
 
     // Register proxy middleware
@@ -198,6 +205,7 @@ app.put("/api/profiles/:id/start", async (req, res) => {
       port: port,
       apiRoot: `/mockoonshare/${id}`,
       content: fs.readFileSync(profilePath, "utf-8"),
+      schemaPath: schemaPathResult
     });
   } catch (err) {
     console.error(`Failed to start mockoon for ${id}:`, err.message);
@@ -225,12 +233,14 @@ app.put("/api/profiles/:id/stop", async (req, res) => {
       });
     }
 
-    const { pid, port } = profileInfo;
-    
+    const { port } = profileInfo;
+    const pid = await $`lsof -i:${port} -t`;
+
     // Kill the process directly
     try {
-      process.kill(pid, 'SIGTERM');
-      console.log(`Mockoon service for '${id}' stopped via process kill (PID: ${pid})`);
+
+      const rslt = await $`kill -9 ${pid}`.nothrow();
+      console.log(`Mockoon service for '${id}' stopped via process kill (PID: ${pid})`, ' port:', port);
     } catch (killError) {
       console.warn(`Failed to kill process ${pid}:`, killError.message);
       return res.status(500).json({ 
@@ -257,38 +267,29 @@ app.put("/api/profiles/:id/stop", async (req, res) => {
 app.post("/api/profiles/:id", (req, res) => {
   try {
     const id = req.params.id;
-    const profilePath = path.join(PROFILES_DIR, `${id}.json`);
+    const schemaPath = path.join(SCHEMA_DIR, `${id}.json`);
     
-    // Validate JSON content
-    let jsonContent;
-    try {
-      jsonContent = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-      JSON.parse(jsonContent); // Validate JSON
-    } catch (e) {
-      return res.status(400).json({ error: 'Invalid JSON content' });
+    // Check if schema file exists (generated during start)
+    if (!fs.existsSync(schemaPath)) {
+      return res.status(404).json({ 
+        error: `OpenAPI schema not found for '${id}'. Please start the profile first to generate the schema.` 
+      });
     }
 
-    // Check if file already exists
-    const fileExists = fs.existsSync(profilePath);
+    console.log(`Returning OpenAPI schema for profile '${id}'`);
     
-    // Write the file
-    fs.writeFileSync(profilePath, jsonContent, 'utf-8');
-    
-    const message = fileExists 
-      ? `Profile '${id}.json' updated successfully`
-      : `Profile '${id}.json' created successfully`;
-    
-    console.log(message);
+    // Read and return the schema file
+    const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
     
     res.json({
-      message,
+      message: `OpenAPI schema retrieved successfully for '${id}'`,
       id,
-      path: profilePath,
-      overwritten: fileExists
+      schemaPath: schemaPath,
+      content: schemaContent
     });
     
   } catch (err) {
-    console.error('Error uploading profile:', err.message);
+    console.error('Error retrieving schema:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -297,7 +298,7 @@ app.get("/api/schema/export/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const profilePath = path.join(PROFILES_DIR, `${id}.json`);
-    const schemaPath = path.join(PROFILES_DIR, `${id}-schema.json`);
+    const schemaPath = path.join(SCHEMA_DIR, `${id}.json`);
 
     if (!fs.existsSync(profilePath)) {
       return res.status(404).json({ error: `Profile '${id}.json' not found` });
@@ -313,15 +314,115 @@ app.get("/api/schema/export/:id", async (req, res) => {
     
     // Read the existing schema file
     const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
-    
+
+    // add requestBody to post/put method endpoints
+    const updatedSchema = JSON.parse(schemaContent);
+    for (const path in updatedSchema.paths) {
+      for (const method in updatedSchema.paths[path]) {
+        if (method === 'post' || method === 'put') {
+          updatedSchema.paths[path][method].requestBody = {
+            "required": true,
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          };
+        }
+      }
+    }
+
     res.json({
       message: `OpenAPI schema retrieved successfully for '${id}'`,
       schemaPath: schemaPath,
-      content: schemaContent
+      content:  JSON.stringify(updatedSchema, null, 2)
     });
 
   } catch (err) {
     console.error(`Error retrieving schema for ${req.params?.id || 'unknown'}:`, err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/schemas", (req, res) => {
+  try {
+    const files = getAllFiles(SCHEMA_DIR);
+    res.json(
+      files
+        .filter((itm) => itm.path?.includes(".json"))
+        .map((itm) => ({
+          id: itm.id,
+          name: itm.name,
+          path: itm.path,
+          schemaPath: itm.path
+        }))
+    );
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/schemas/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    const schemaPath = path.join(SCHEMA_DIR, `${id}.json`);
+    
+    // Validate JSON content
+    let jsonContent;
+    try {
+      jsonContent = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      JSON.parse(jsonContent); // Validate JSON
+    } catch (e) {
+      return res.status(400).json({ error: 'Invalid JSON content' });
+    }
+
+    // Check if file already exists
+    const fileExists = fs.existsSync(schemaPath);
+    
+    // Write the schema file
+    fs.writeFileSync(schemaPath, jsonContent, 'utf-8');
+    
+    const message = fileExists 
+      ? `Schema '${id}.json' updated successfully`
+      : `Schema '${id}.json' created successfully`;
+    
+    console.log(message);
+    
+    res.json({
+      message,
+      id,
+      path: schemaPath,
+      overwritten: fileExists
+    });
+    
+  } catch (err) {
+    console.error('Error uploading schema:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/api/schemas/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    const schemaPath = path.join(SCHEMA_DIR, `${id}.json`);
+    
+    if (!fs.existsSync(schemaPath)) {
+      return res.status(404).json({ error: `Schema '${id}.json' not found` });
+    }
+    
+    // Delete the schema file
+    fs.unlinkSync(schemaPath);
+    
+    console.log(`Schema '${id}.json' deleted successfully`);
+    
+    res.json({
+      message: `Schema '${id}.json' deleted successfully`,
+      id,
+      path: schemaPath
+    });
+    
+  } catch (err) {
+    console.error('Error deleting schema:', err.message);
     res.status(500).json({ error: err.message });
   }
 });

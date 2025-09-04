@@ -4,7 +4,13 @@ import ActionButton from './ActionButton';
 import EndpointsList from './EndpointsList';
 import { loadProfilesAtom } from '../store/profilesStore';
 
-const ProfileRow = ({ profile }) => {
+/**
+ * @param {Object} props
+ * @param {Object} props.profile
+ * @param {function} [props.onOpenSwaggerEditor]
+ * @param {function} [props.onShowError]
+ */
+const ProfileRow = ({ profile, onOpenSwaggerEditor, onShowError }) => {
   const [showEndpoints, setShowEndpoints] = useState(profile.running || false);
   const [, loadProfiles] = useAtom(loadProfilesAtom);
   
@@ -26,7 +32,8 @@ const ProfileRow = ({ profile }) => {
       });
       
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Network response was not ok');
       }
       
       const data = await response.json();
@@ -38,6 +45,9 @@ const ProfileRow = ({ profile }) => {
       
     } catch (error) {
       console.error(`Error ${action}ing profile:`, error);
+      if (typeof onShowError === 'function') {
+        onShowError(`Failed to ${action} profile "${profileName}": ${error.message}`);
+      }
     }
   };
 
@@ -62,24 +72,47 @@ const ProfileRow = ({ profile }) => {
 
   const handleExportSchema = async () => {
     try {
-      const response = await fetch(`/api/schema/export/${profileName}`, {
-        method: 'GET',
+      // Use the new POST endpoint that only returns schema
+      const response = await fetch(`/api/profiles/${profileName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to retrieve schema');
       }
       
       const data = await response.json();
-      console.log('Schema exported:', data);
+      console.log('Schema retrieved:', data);
       
-      // Open Swagger Editor with the exported schema
-      const schemaUrl = `http://${window.location.hostname}:8201/${profileName}-schema.json`;
-      const swaggerEditorUrl = `https://editor.swagger.io/?url=${encodeURIComponent(schemaUrl)}`;
-      window.open(swaggerEditorUrl, '_blank');
+      // Parse and prepare schema for Swagger Editor
+      let schema = null;
+      try {
+        schema = typeof data.content === 'string' ? JSON.parse(data.content) : data.content;
+      } catch (parseError) {
+        throw new Error('Invalid schema format received from server');
+      }
       
+      if (typeof onOpenSwaggerEditor === 'function') {
+        // Update baseUrl with prefix: /mockoonshare/${profileName}
+        schema = {
+          ...schema,
+          servers: [
+            {
+              url: `${window.location.origin}/mockoonshare/${profileName}`,
+            },
+          ],
+        };
+        onOpenSwaggerEditor(schema);
+      }
     } catch (error) {
       console.error('Error exporting schema:', error);
+      if (typeof onShowError === 'function') {
+        onShowError(`Failed to export schema for "${profileName}": ${error.message}`);
+      }
     }
   };
 
@@ -89,36 +122,33 @@ const ProfileRow = ({ profile }) => {
         <a href={profileUrl} target="_blank" rel="noopener noreferrer">
           {profile.name}
         </a>
-        
         <ActionButton
           icon="⌨️"
           title="Copy CMD"
           onClick={handleCopyCommand}
           successIcon="✅"
         />
-        
         <ActionButton
           icon={profile.running ? "🚫" : "▶️"}
           title={profile.running ? "Stop profile" : "Start profile"}
           onClick={handleToggleProfile}
           loadingIcon="⏳"
         />
-        
         <ActionButton
           icon="🔀"
           title="Copy Whistle Rules"
           onClick={handleCopyWhistleRules}
           successIcon="✅"
         />
-        
-        <ActionButton
-          icon="📖"
-          title="Export OpenAPI Schema"
-          onClick={handleExportSchema}
-          successIcon="✅"
-          loadingIcon="⏳"
-        />
-        
+        {profile.schemaPath !== null && (
+          <ActionButton
+            icon="📖"
+            title="Export OpenAPI Schema"
+            onClick={handleExportSchema}
+            successIcon="✅"
+            loadingIcon="⏳"
+          />
+        )}
         {showEndpoints && (
           <EndpointsList profile={profile} />
         )}

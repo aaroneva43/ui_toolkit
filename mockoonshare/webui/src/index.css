@@ -194,3 +194,135 @@ td a:hover {
 .dropdown-item-icon {
   font-size: 14px;
 }
+
+/* Error Popup Styles */
+.error-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.error-popup {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.error-popup-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+}
+
+.error-icon {
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+.error-popup-header h3 {
+  margin: 0;
+  flex: 1;
+  color: #dc3545;
+  font-size: 18px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #000;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+}
+
+.error-popup-content {
+  padding: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.error-popup-content p {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
+}
+
+.error-popup-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ok-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ok-btn:hover {
+  background-color: #c82333;
+}
+
+/* Tab Menu Styles */
+.tab-menu {
+  display: flex;
+  margin: 20px 0;
+  border-bottom: 2px solid #eee;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+}
+
+.tab-button:hover {
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+.tab-button.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  background-color: #f8f9fa;
+}
+
+.tab-button.active:hover {
+  color: #0056b3;
+  border-bottom-color: #0056b3;
+}

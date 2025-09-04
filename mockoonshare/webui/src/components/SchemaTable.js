@@ -1,9 +1,9 @@
 import React from 'react';
-import ProfileRow from './ProfileRow';
+import SchemaRow from './SchemaRow';
 import SwaggerEditorLayer from './SwaggerEditorLayer';
 import ErrorPopup from './ErrorPopup';
 
-const ProfileTable = ({ profiles }) => {
+const SchemaTable = ({ schemas }) => {
   const [swaggerOpen, setSwaggerOpen] = React.useState(false);
   const [swaggerSchema, setSwaggerSchema] = React.useState(null);
   const [errorPopup, setErrorPopup] = React.useState({ show: false, message: '' });
@@ -25,10 +25,10 @@ const ProfileTable = ({ profiles }) => {
     <>
       <table>
         <tbody>
-          {profiles.map((profile) => (
-            <ProfileRow 
-              key={profile.name} 
-              profile={profile}
+          {schemas.map((schema) => (
+            <SchemaRow 
+              key={schema.name} 
+              schema={schema}
               onOpenSwaggerEditor={handleOpenSwaggerEditor}
               onShowError={handleShowError}
             />
@@ -49,4 +49,4 @@ const ProfileTable = ({ profiles }) => {
   );
 };
 
-export default ProfileTable;
+export default SchemaTable;

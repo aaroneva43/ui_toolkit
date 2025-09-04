@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const DragDropArea = ({ onUpload }) => {
+const DragDropArea = ({ onUpload, mode = 'profiles' }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -45,9 +45,19 @@ const DragDropArea = ({ onUpload }) => {
       }
 
       const fileName = file.name;
-      const id = fileName.replace('.json', '');
+      let id, endpoint;
+      
+      if (mode === 'schemas') {
+        // For schemas, just remove .json suffix (no more -schema suffix needed)
+        id = fileName.replace('.json', '');
+        endpoint = `/api/schemas/${id}`;
+      } else {
+        // For profiles, remove .json suffix
+        id = fileName.replace('.json', '');
+        endpoint = `/api/profiles/${id}`;
+      }
 
-      const response = await fetch(`/api/profiles/${id}`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,11 +66,12 @@ const DragDropArea = ({ onUpload }) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to upload ${fileName}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to upload ${fileName}`);
       }
 
       console.log(`Successfully uploaded ${fileName}`);
-      onUpload(); // Refresh the profiles list
+      onUpload(); // Refresh the list
 
     } catch (error) {
       console.error(`Error uploading ${file.name}:`, error);
@@ -69,6 +80,22 @@ const DragDropArea = ({ onUpload }) => {
       setIsUploading(false);
     }
   };
+
+  const getDropText = () => {
+    if (mode === 'schemas') {
+      return {
+        main: 'Drag & drop your OpenAPI schema here',
+        sub: 'JSON schema files will be uploaded to the schemas directory'
+      };
+    } else {
+      return {
+        main: 'Drag & drop your Mockoon profile here',
+        sub: 'Files with existing names will be overwritten'
+      };
+    }
+  };
+
+  const dropText = getDropText();
 
   return (
     <div
@@ -85,8 +112,8 @@ const DragDropArea = ({ onUpload }) => {
       ) : (
         <div className="drop-content">
           <span>📁</span>
-          <p>Drag & drop your Mockoon profile here</p>
-          <small>Files with existing names will be overwritten</small>
+          <p>{dropText.main}</p>
+          <small>{dropText.sub}</small>
         </div>
       )}
     </div>
