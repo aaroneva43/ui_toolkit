@@ -14,7 +14,7 @@ const app = express();
 const fileApp = express();
 
 // Add JSON middleware for parsing request bodies
-app.use(express.json({ limit: '10mb' }));
+app.use('/api', express.json({ limit: '10mb' })); // Only parse for /api routes
 app.use(express.text({ limit: '10mb' }));
 
 const PORT = 8200;
@@ -190,6 +190,7 @@ app.put("/api/profiles/:id/start", async (req, res) => {
         logLevel: "warn",
       })
     );
+
     console.log(`Mockoon service for '${id}' started on port ${port}`);
     res.json({
       message: `Mockoon service for '${id}' started on port ${port}`,
@@ -333,8 +334,8 @@ const sslOptions = {
 
 // Create HTTPS server
 https.createServer(sslOptions, app).listen(PORT, () => {
-  console.log(`HTTPS Server running at https://localhost:${PORT}`);
+  console.log(`HTTPS Server running at https://0.0.0.0:${PORT}`);
 });
 fileApp.listen(FILEPORT, () => {
-  console.log(`File server running at http://localhost:${FILEPORT}`);
+  console.log(`File server running at http://0.0.0.0:${FILEPORT}`);
 });
